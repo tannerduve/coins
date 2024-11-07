@@ -1,6 +1,6 @@
 # Bytelandian Gold Coin Problem Solver
 
-This repository contains a Lean implementation of an efficient algorithm to solve the Bytelandian gold coin problem. The algorithm computes the maximum amount of American dollars obtainable from a Bytelandian gold coin of value n, using memoization with proof-carrying values to prove correctness.
+This repository contains a Lean implementation and proof of correctness of a dynamic programming algorithm to solve the Bytelandian gold coin problem. The algorithm computes the maximum amount of American dollars obtainable from a Bytelandian gold coin of value n, using memoization with proof-carrying values to prove correctness.
 
 ## Problem Description
 
