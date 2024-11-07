@@ -46,7 +46,7 @@ def WeakMHMap_find? (ft : Nat → Nat) (hm : WeakMHMap ft) (a : Nat) : Option { 
         have hx := x.property       -- Extract the proof that `ft x.val.fst = x.val.snd`.
         rw [← heq] at hx            -- Replace `x.val.fst` with `a` using `heq`.
         exact hx                    -- Conclude that `ft a = x.val.snd`.
-      some ⟨ x.val.snd, this ⟩     -- Return the value and proof as `some`.
+      pure ⟨ x.val.snd, this ⟩     -- Return the value and proof as `some`.
     else
       none  -- If the keys don't match (shouldn't happen), return `none`.
 
@@ -78,7 +78,7 @@ def helper (n : Nat) (memo : WeakMHMap maxDollars_spec) :
       let (r1, memo1) := helper (n / 2) memo
       let (r2, memo2) := helper (n / 3) memo1
       let (r3, memo3) := helper (n / 4) memo2
-      -- `r1`, `r2`, `r3` are of type `{ v : Nat // maxDollars_spec (n / x) = v }`.
+      -- `r1`, `r2`, `r3` are of type `{ v : Nat // maxDollars_spec (n / x) = v }`. Basically an induction hypothesis.
       -- `memo3` is the updated memoization map after all recursive calls.
       let exchangeSum := r1.val + r2.val + r3.val  -- Sum the values obtained from recursion.
       let v := max n exchangeSum  -- Decide whether to sell `n` directly or exchange it.
