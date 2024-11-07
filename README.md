@@ -14,11 +14,11 @@ Your goal is to determine the maximum dollars obtainable from a coin of value n 
 
 ## Solution Overview
 
-This is a Dynamic programming problem. We can observe that for amount upto 8, we can’t get more money by dividing (into n/2, n/3 and n/4). We will create an array to memoize the values. For any value, the minimum amount we can get out of it is n. We will compare this value with the value we get after dividing n and select the bigger value.
+This is a Dynamic programming problem. We can observe that for amount upto 8, we can’t get more money by dividing (into n/2, n/3 and n/4). We will create a hashmap to memoize the values. For any value, the minimum amount we can get out of it is n. We will compare this value with the value we get after dividing n and select the bigger value.
 
 ## Proof-Carrying Memoization: Ensuring Correctness with Dependent Types
 
-Proving correctness for memoized algorithms requires ensuring invariants of the data structure on cached values. This solution uses dependent types and proof-carrying data structures to attach logical properties to cached values directly in the memoization map. Each entry in the memoization map is paired with a proof that it was compited properly, proving the correctness of the algorithm within the algorithm itself.
+Proving correctness for memoized algorithms requires ensuring invariants of the data structure on cached values. This solution uses dependent types and proof-carrying data structures to attach logical properties to cached values directly in the memoization map. Each entry in the memoization map is paired with a proof that it was computed properly, proving the correctness of the algorithm within the algorithm itself.
 
 Specification Function: The function `maxDollars_spec` is the condition that each computed value must satisfy, it defines the maximum dollars obtainable for a coin of value `n`.
 
@@ -36,7 +36,6 @@ theorem maxDollars_spec_correct (n : Nat) : maxDollars n = maxDollars_spec n := 
   -- Since `maxDollars n = v` and `maxDollars_spec n = v`, we conclude they are equal.
   exact h_spec.symm
 ```
-
 
 Why This Works: By attaching proofs to every entry, the map becomes a proof-carrying structure. This approach modularizes correctness verification by verifying each computed result as it’s added.
 
