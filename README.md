@@ -16,10 +16,13 @@ This problem is well-suited for a dynamic programming approach due to overlappin
 
 ## Implementation Details
 
-Language and Dependencies
+### Language and Dependencies
+
 Language: Lean 4
+
 Dependencies:
 Std.Data.HashMap: Provides the HashMap data structure for memoization.
+
 Mathlib.Tactic.Cases, Mathlib.Tactic.Linarith: Tactics for case analysis and arithmetic proofs.
 Key Functions
 
