@@ -14,30 +14,18 @@ Your goal is to determine the maximum dollars obtainable from a coin of value n 
 
 ## Solution Overview
 
-This problem is well-suited for a dynamic programming approach due to overlapping subproblems and optimal substructure. To compute the solution efficiently, we use memoization while also ensuring each stored value is provably correct according to a specification.
+This is a Dynamic programming problem. We can observe that for amount upto 8, we can’t get more money by dividing (into n/2, n/3 and n/4). We will create an array to memoize the values. For any value, the minimum amount we can get out of it is n. We will compare this value with the value we get after dividing n and select the bigger value.
 
 ## Proof-Carrying Memoization: Ensuring Correctness with Dependent Types
 
 Proving correctness for memoized algorithms requires ensuring invariants of the data structure on cached values. This solution uses dependent types and proof-carrying data structures to attach logical properties to cached values directly in the memoization map. Each entry in the memoization map is paired with a proof that it was compited properly, proving the correctness of the algorithm within the algorithm itself.
 
-Specification Function: The function maxDollars_spec serves as the standard that each computed value must satisfy.
+Specification Function: The function `maxDollars_spec` is the condition that each computed value must satisfy, it defines the maximum dollars obtainable for a coin of value `n`.
 
-Memoization with Proofs: The custom map WeakMHMap stores pairs (k, v) with a proof that maxDollars_spec k = v, ensuring all cached values meet the specification.
+Memoization with Proofs: The custom map `WeakMHMap` stores pairs `(k, v)` with a proof that `maxDollars_spec k = v`, ensuring all cached values meet the specification.
 
 Enforcing the Invariant: Each computed value is stored with a proof that it meets the specification, preserving correctness across entries.
 
-Why This Works: By attaching proofs to every entry, the map becomes a proof-carrying structure. This approach modularizes correctness verification by verifying each computed result as it’s added, simplifying the proof.
-
-## Main Implementation Steps
-We use the function `maxDollar_spec` to define the maximum dollars obtainable for a coin of value `n`
-
-We Define a memoization map (`WeakMHMap`) with proof-carrying values.
-Each entry maps a `Nat` to a pair `(k, v)` along with a proof that `ftarget k = v`.
-```
-  abbrev WeakMHMap (ftarget : Nat → Nat) :=
-  HashMap Nat { c : Nat × Nat // ftarget c.fst = c.snd }
-```
-
-We then define our algorithm `maxDollars` which uses a recursive helper function `helper` to memoize the values along with their proofs, building up the proof of correctness within the code.
+Why This Works: By attaching proofs to every entry, the map becomes a proof-carrying structure. This approach modularizes correctness verification by verifying each computed result as it’s added.
 
 The entire implementation is in Coins/CoinSolution.lean
