@@ -27,3 +27,15 @@ Memoization with Proofs: The custom map WeakMHMap stores pairs (k, v) with a pro
 Enforcing the Invariant: Each computed value is stored with a proof that it meets the specification, preserving correctness across entries.
 
 Why This Works: By attaching proofs to every entry, the map becomes a proof-carrying structure. This approach modularizes correctness verification by verifying each computed result as it’s added, simplifying the proof.
+
+## Main Implementation Steps
+We use the function `maxDollar_spec` to define the maximum dollars obtainable for a coin of value `n`
+
+We Define a memoization map (`WeakMHMap`) with proof-carrying values.
+Each entry maps a `Nat` to a pair `(k, v)` along with a proof that `ftarget k = v`.
+```
+  abbrev WeakMHMap (ftarget : Nat → Nat) :=
+  HashMap Nat { c : Nat × Nat // ftarget c.fst = c.snd }
+```
+
+We then define our algorithm `maxDollars` which uses a recursive helper function `helper` to memoize the values along with their proofs, building up the proof of correctness within the code.
