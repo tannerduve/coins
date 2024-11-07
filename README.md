@@ -14,6 +14,23 @@ Your goal is to determine the maximum amount of dollars obtainable from a coin o
 
 This problem is well-suited for a dynamic programming approach due to overlapping subproblems and optimal substructure. To compute the solution efficiently, we use memoization while also ensuring that each stored value is provably correct according to a specification.
 
+## Proof-Carrying Memoization: Ensuring Correctness with Dependent Types
+
+One challenge in proving the correctness of memoized algorithms is maintaining a proof of invariants on the cached values. In typical dynamic programming, we use memoization to avoid recomputing values, but proving correctness can be tricky when memoized results introduce state.
+
+Using Dependent Types to Maintain Invariants
+
+This solution uses dependent types and proof-carrying data structures to ensure correctness. The idea is to attach logical properties directly to the data in the memoization map. Instead of storing just values, we store each value with a proof that it meets the function’s specification.
+
+Here’s the approach:
+
+Specification Function: We start by defining a specification function maxDollars_spec that outlines the correct result for any input n. This function serves as the standard our computed values must meet.
+Memoization with Proofs: Instead of a standard map, we use a specialized memoization map (WeakMHMap) where each entry is a pair (k, v) with a proof that maxDollars_spec k = v. This proof-carrying structure guarantees that all cached values satisfy the specification.
+abbrev WeakMHMap (ftarget : Nat → Nat) := HashMap Nat { c : Nat × Nat // ftarget c.fst = c.snd }
+Each entry { c : Nat × Nat // ftarget c.fst = c.snd } ensures that for every key k, the associated value v is correct as per ftarget (here, maxDollars_spec).
+Enforcing the Invariant: Whenever we compute a new value for n, we also generate a proof that it satisfies maxDollars_spec n. We store this value and its proof in the map, preserving the invariant across all entries.
+Why This Works: By attaching proofs to every entry, the memoization map becomes a proof-carrying structure. We no longer need to prove the correctness of the entire function at once; instead, we verify each computed result as it’s added. This modular approach simplifies correctness verification, as each part of the computation is proven independently.
+
 ## Implementation Details
 
 ### Language and Dependencies
