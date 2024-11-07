@@ -22,17 +22,23 @@ Dependencies:
 Std.Data.HashMap: Provides the HashMap data structure for memoization.
 Mathlib.Tactic.Cases, Mathlib.Tactic.Linarith: Tactics for case analysis and arithmetic proofs.
 Key Functions
+
 Specification Function (maxDollars_spec): Defines the maximum dollars obtainable for a coin of value n.
 For n ≤ 8, returns n directly.
 For n > 8, returns max(n, maxDollars_spec(n/2) + maxDollars_spec(n/3) + maxDollars_spec(n/4)).
+
 Memoization Map with Proofs (WeakMHMap): A custom map that stores both values and proofs that each entry is correct according to the specification.
+
 Recursive Helper Function (helper): Computes the maximum dollars for a given n, carries proofs with each computed value, and updates the memoization map accordingly.
+
 Main Function (maxDollars): Initializes the computation with an empty memoization map and retrieves the final result.
+
 Proof-Carrying Memoization: Ensuring Correctness with Dependent Types
 
 One challenge in proving correctness of memoized algorithms is maintaining invariants on cached values. This solution uses dependent types and proof-carrying data structures to ensure correctness by attaching proofs directly to each entry in the memoization map.
 
 Specification Function: The function maxDollars_spec acts as the standard that each computed value must satisfy.
+
 Memoization with Proofs: The custom map WeakMHMap stores pairs (k, v) with a proof that maxDollars_spec k = v, ensuring all cached values meet the specification.
 Enforcing the Invariant: Each computed value is stored with a proof that it meets the specification, preserving the invariant throughout the computation.
 Why This Works: By attaching proofs to every entry, the map becomes a proof-carrying structure. This approach modularizes correctness verification by verifying each computed result as it’s added.
