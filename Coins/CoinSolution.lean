@@ -17,7 +17,7 @@ open Std
 
   Solution Overview:
 
-  This is a dynamic programming problem with overlapping subproblems and optimal substructure. We use memoization to store intermediate results and avoid redundant computations.
+  This is a dynamic programming problem. We use memoization to store intermediate results and avoid redundant computations.
 
   We define a recursive function `maxDollars_spec` as our specification, and then implement a memoized version that carries proofs of correctness using dependent types.
 -/
