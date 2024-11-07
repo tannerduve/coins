@@ -1,8 +1,8 @@
-**Bytelandian Gold Coin Problem Solver**
+***Bytelandian Gold Coin Problem Solver***
 
 This repository contains a Lean implementation of an efficient algorithm to solve the Bytelandian gold coin problem. The algorithm computes the maximum amount of American dollars obtainable from a Bytelandian gold coin of value n, using memoization with proof-carrying values to ensure correctness.
 
-*Problem Description*
+**Problem Description**
 
 In Byteland, each gold coin has an integer n written on it. You have two options:
 
@@ -10,11 +10,11 @@ Sell the Coin Directly: Sell the coin for n dollars (1:1 exchange rate).
 Exchange the Coin: Exchange the coin in a bank for three smaller coins with values n/2, n/3, and n/4 (all rounded down).
 Your goal is to determine the maximum amount of dollars obtainable from a coin of value n (where 0 ≤ n ≤ 1,000,000,000).
 
-*Solution Overview*
+**Solution Overview**
 
 This problem is well-suited for a dynamic programming approach due to overlapping subproblems and optimal substructure. To compute the solution efficiently, we use memoization while also ensuring that each stored value is provably correct according to a specification.
 
-*Implementation Details*
+**Implementation Details**
 
 Language and Dependencies
 Language: Lean 4
