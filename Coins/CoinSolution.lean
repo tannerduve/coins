@@ -1,7 +1,6 @@
 import Std.Data.HashMap
 import Mathlib.Tactic.Cases
 import Mathlib.Tactic.Linarith
-
 open Std
 
 /--
@@ -102,3 +101,11 @@ def maxDollars (n : Nat) : Nat :=
 #eval maxDollars 8   -- Expected output: 8
 #eval maxDollars 25  -- Expected output: 27
 #eval maxDollars 520 -- Expected output: 689
+
+-- Theorem stating that `maxDollars n` equals `maxDollars_spec n`.
+theorem maxDollars_spec_correct (n : Nat) : maxDollars n = maxDollars_spec n := by
+  unfold maxDollars
+  -- Let `⟨v, h_spec⟩` be the result from `helper n HashMap.empty`.
+  let ⟨v, h_spec⟩ := (helper n HashMap.empty).1
+  -- Since `maxDollars n = v` and `maxDollars_spec n = v`, we conclude they are equal.
+  exact h_spec.symm
