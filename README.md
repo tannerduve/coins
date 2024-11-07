@@ -18,7 +18,7 @@ This problem is well-suited for a dynamic programming approach due to overlappin
 
 ## Proof-Carrying Memoization: Ensuring Correctness with Dependent Types
 
-Proving correctness for memoized algorithms can be challenging when ensuring invariants on cached values. This solution uses dependent types and proof-carrying data structures to attach logical properties to cached values directly in the memoization map. The algorithm's proof of correctness is encoded into the algorithm itself.
+Proving correctness for memoized algorithms requires ensuring invariants of the data structure on cached values. This solution uses dependent types and proof-carrying data structures to attach logical properties to cached values directly in the memoization map. Each entry in the memoization map is paired with a proof that it was compited properly, proving the correctness of the algorithm within the algorithm itself.
 
 Specification Function: The function maxDollars_spec serves as the standard that each computed value must satisfy.
 
