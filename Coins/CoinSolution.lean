@@ -3,6 +3,7 @@ import Mathlib.Tactic.Cases
 import Mathlib.Tactic.Linarith
 open Std
 
+
 /--
   Computes the maximum dollars obtainable from a Bytelandian gold coin of value `n`.
   Utilizes pure memoization with a `HashMap` to store intermediate results for efficiency.
@@ -109,3 +110,32 @@ theorem maxDollars_spec_correct (n : Nat) : maxDollars n = maxDollars_spec n := 
   let ⟨v, h_spec⟩ := (helper n HashMap.empty).1
   -- Since `maxDollars n = v` and `maxDollars_spec n = v`, we conclude they are equal.
   exact h_spec.symm
+
+-- Basic DP Solution without proof carrying code
+
+def partial_map_nat : Type := Nat → Option Nat
+
+def insert_nat (m : partial_map_nat) (k v : Nat) : partial_map_nat :=
+  fun k' => if k = k' then some v else m k'
+
+def empty_map_nat : partial_map_nat := fun _ => none
+
+def helper2 (n : Nat) (memo : partial_map_nat) : Nat :=
+  match memo n with
+  | some v => v
+  | none =>
+    if n ≤ 8 then
+      n
+    else
+      let r1 := helper2 (n / 2) memo
+      let r2 := helper2 (n / 3) memo
+      let r3 := helper2 (n / 4) memo
+      let exchangeSum := r1 + r2 + r3
+      let v := max n exchangeSum
+      v
+
+def maxDollars2 (n : Nat) : Nat :=
+  helper2 n (fun _ => none)
+
+#eval maxDollars2 12  -- Expected output: 13
+#eval maxDollars2 2   -- Expected output: 2
