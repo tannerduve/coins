@@ -26,6 +26,18 @@ Memoization with Proofs: The custom map `WeakMHMap` stores pairs `(k, v)` with a
 
 Enforcing the Invariant: Each computed value is stored with a proof that it meets the specification, preserving correctness across entries.
 
+Since each memoized value stores a proof of correctness, the final correctness claim becomes straightforward. The final theorem and proof is as follows:
+```
+-- Theorem stating that `maxDollars n` equals `maxDollars_spec n`.
+theorem maxDollars_spec_correct (n : Nat) : maxDollars n = maxDollars_spec n := by
+  unfold maxDollars
+  -- Let `⟨v, h_spec⟩` be the result from `helper n HashMap.empty`.
+  let ⟨v, h_spec⟩ := (helper n HashMap.empty).1
+  -- Since `maxDollars n = v` and `maxDollars_spec n = v`, we conclude they are equal.
+  exact h_spec.symm
+```
+
+
 Why This Works: By attaching proofs to every entry, the map becomes a proof-carrying structure. This approach modularizes correctness verification by verifying each computed result as it’s added.
 
 The entire implementation is in Coins/CoinSolution.lean
