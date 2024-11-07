@@ -39,3 +39,5 @@ Each entry maps a `Nat` to a pair `(k, v)` along with a proof that `ftarget k = 
 ```
 
 We then define our algorithm `maxDollars` which uses a recursive helper function `helper` to memoize the values along with their proofs, building up the proof of correctness within the code.
+
+The entire implementation is in Coins/CoinSolution.lean
