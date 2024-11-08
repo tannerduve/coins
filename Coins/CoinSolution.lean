@@ -1,6 +1,4 @@
-import Std.Data.HashMap
-import Mathlib.Tactic.Cases
-import Mathlib.Tactic.Linarith
+import Batteries.Data.HashMap.Basic
 open Std
 
 
@@ -136,6 +134,9 @@ def helper2 (n : Nat) (memo : partial_map_nat) : Nat :=
 
 def maxDollars2 (n : Nat) : Nat :=
   helper2 n (fun _ => none)
+
+def helper2_c (n : UInt32) : UInt32 :=
+  UInt32.ofNat (maxDollars2 n.toNat)
 
 #eval maxDollars2 12  -- Expected output: 13
 #eval maxDollars2 2   -- Expected output: 2
