@@ -136,7 +136,7 @@ def maxDollars2 (n : Nat) : Nat :=
   helper2 n (fun _ => none)
 
 def helper2_c (n : UInt32) : UInt32 :=
-  UInt32.ofNat (maxDollars2 n.toNat)
+  UInt32.ofNat (maxDollars n.toNat)
 
 #eval maxDollars2 12  -- Expected output: 13
 #eval maxDollars2 2   -- Expected output: 2
