@@ -118,7 +118,7 @@ def partial_map_nat : Type := Nat → Option Nat
 def insert_nat (m : partial_map_nat) (k v : Nat) : partial_map_nat :=
   fun k' => if k = k' then some v else m k'
 
-@[extern helper2]
+
 def helper2 (n : Nat) (memo : partial_map_nat) : Nat :=
   match memo n with
   | some v => v
@@ -133,7 +133,6 @@ def helper2 (n : Nat) (memo : partial_map_nat) : Nat :=
       let v := max n exchangeSum
       v
 
-@[extern maxDollars2]
 def maxDollars2 (n : Nat) : Nat :=
   helper2 n (fun _ => none)
 
