@@ -9,6 +9,7 @@ LEAN_LIB_DIR="$LIB_DIR/lean"
 
 # Step 1: Build the Lean code
 lake build
+lake build Coins.FFI:c
 
 # Verify if Coins.c file was generated
 if [ ! -f ".lake/build/ir/Coins/FFI.c" ]; then
