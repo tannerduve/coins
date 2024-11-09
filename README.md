@@ -43,4 +43,4 @@ The main implementation is in Coins/CoinSolution.lean
 
 ## Codegen into C
 
-I provide a way to extract C code from a simplified but functionally equivalent version of my maxDollars function, in Coins > FFI.lean, using Lean's FFI interface. To call the generated C code, we use our function in file main.c, on an example input. To run this, run lake clean in your terminal and then run ./build.sh, where the build script is located. This will perform all the needed builds, generate a C file for FFI, and then run our main C function using the generated code.
+I provide a way to extract C code from a simplified but functionally equivalent version of my maxDollars function, in Coins > CoinSolution.lean, using Lean's FFI interface. To call the generated C code, we use our function in file main.c, on an example input. To run this, run lake clean in your terminal and then run ./build.sh, where the build script is located. This will perform all the needed builds, generate a C file for FFI, and then run our main C function using the generated code.
