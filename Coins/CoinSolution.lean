@@ -31,35 +31,62 @@ def maxDollars_spec (n : Nat) : Nat :=
     max n (maxDollars_spec (n / 2) + maxDollars_spec (n / 3) + maxDollars_spec (n / 4))
     -- Recursive case: choose the maximum between selling the coin directly and exchanging it.
 
--- Define a memoization map (`WeakMHMap`) with proof-carrying values.
--- Each entry maps a `Nat` to a pair `(k, v)` along with a proof that `ftarget k = v`.
-abbrev WeakMHMap (ftarget : Nat → Nat) :=
-  HashMap Nat { c : Nat × Nat // ftarget c.fst = c.snd }
+def helperMemo
+    (n : Nat)
+    (memo : HashMap Nat Nat) :
+    Nat × HashMap Nat Nat :=
+  match memo.get? n with
+  | some v => (v, memo)          -- already cached
+  | none   =>
+    if h : n ≤ 8 then            -- base case: sell coin directly
+      let memo' := memo.insert n n
+      (n, memo')
+    else
+      -- recursive: compute best exchange value, memoizing along the way
+      let (v1, memo1) := helperMemo (n / 2) memo
+      let (v2, memo2) := helperMemo (n / 3) memo1
+      let (v3, memo3) := helperMemo (n / 4) memo2
+      let best := max n (v1 + v2 + v3)
+      let memo' := memo3.insert n best
+      (best, memo')
 
--- Implement `WeakMHMap_find?` to retrieve a value and its proof from the memoization map.
-def WeakMHMap_find? (ft : Nat → Nat) (hm : WeakMHMap ft) (a : Nat) : Option { b : Nat // ft a = b } :=
+def maxDollarsMemo (n : Nat) : Nat :=
+  (helperMemo n (HashMap.empty)).fst
+
+def cell (ftarget: α → β):=
+  {c: α × β//ftarget c.fst =c.snd}
+
+-- Define a memoization map (`PropMap`) with proof-carrying values.
+-- Each entry maps a `α` to a pair `(k, v)` along with a proof that `ftarget k = v`.
+abbrev PropMap [BEq α][Hashable α] [LawfulBEq α] (ftarget : α → β) :=
+  HashMap α { c : α × β // ftarget c.1 = c.2 }
+
+
+-- Implement `PropMap_get?` to retrieve a value and its proof from the memoization map.
+def PropMap_get? [BEq α][Hashable α] [LawfulBEq α] (ft : α → β) (hm : PropMap ft) (a : α) : Option { b : β // ft a = b } :=
   match hf : hm.get? a with  -- Attempt to get the value associated with `a` in the map.
   | none => none            -- If not found, return `none`.
   | some x =>
-    if heq : a = x.val.fst then  -- Check if the key `a` matches `x.val.fst`.
+    if heq : a == x.val.fst then  -- Check if the key `a` matches `x.val.fst`.
       have : ft a = x.val.snd := by
         have hx := x.property       -- Extract the proof that `ft x.val.fst = x.val.snd`.
+        rw [beq_iff_eq] at heq      -- Propositional equality from boolean equality
         rw [← heq] at hx            -- Replace `x.val.fst` with `a` using `heq`.
         exact hx                    -- Conclude that `ft a = x.val.snd`.
       pure ⟨ x.val.snd, this ⟩     -- Return the value and proof as `some`.
     else
       none  -- If the keys don't match (shouldn't happen), return `none`.
 
--- Implement `WeakMHMap_insert` to insert a value and its proof into the memoization map.
-def WeakMHMap_insert (ft : Nat → Nat) (hm : WeakMHMap ft) (k : Nat) (v : Nat) (h : ft k = v) : WeakMHMap ft :=
-  let cell : { c : Nat × Nat // ft c.fst = c.snd } := ⟨(k, v), h⟩  -- Create the cell with proof.
+-- Implement `PropMap_insert` to insert a value and its proof into the memoization map.
+def PropMap_insert [BEq α][Hashable α] [LawfulBEq α] (ft : α → β) (hm : PropMap ft) (k : α) (v : β) (h : ft k = v) : PropMap ft :=
+  let cell : { c : α × β // ft c.fst = c.snd } := ⟨(k, v), h⟩  -- Create the cell with proof.
   hm.insert k cell  -- Insert the cell into the map at key `k`.
 
 -- Recursive helper function for `maxDollars` with proof-carrying values.
 -- It returns a pair of the computed value and the updated memoization map.
-def helper (n : Nat) (memo : WeakMHMap maxDollars_spec) :
-  { v : Nat // maxDollars_spec n = v } × WeakMHMap maxDollars_spec :=
-  match WeakMHMap_find? maxDollars_spec memo n with
+def helper (n : Nat) (memo : PropMap maxDollars_spec) :
+  { v : Nat // maxDollars_spec n = v } × PropMap maxDollars_spec :=
+  match PropMap_get? maxDollars_spec memo n with
   | some result =>
     -- If `n` is already in the memoization map, return the cached value and the memo.
     -- `result` has type `{ v : Nat // maxDollars_spec n = v }`.
@@ -70,7 +97,7 @@ def helper (n : Nat) (memo : WeakMHMap maxDollars_spec) :
       let v := n
       let h_spec : maxDollars_spec n = v := by simp [maxDollars_spec, h]
       -- Prove that `maxDollars_spec n = n` using simplification.
-      let memo' := WeakMHMap_insert maxDollars_spec memo n v h_spec
+      let memo' := PropMap_insert maxDollars_spec memo n v h_spec
       -- Insert `(n, v)` with proof into the memoization map.
       (⟨v, h_spec⟩, memo')
     else
@@ -88,7 +115,7 @@ def helper (n : Nat) (memo : WeakMHMap maxDollars_spec) :
         rw [if_neg h]                  -- Since `n > 8`, use the recursive case.
         rw [r1.property, r2.property, r3.property]
         -- Replace recursive calls with their computed values using the proofs from `r1`, `r2`, `r3`.
-      let memo' := WeakMHMap_insert maxDollars_spec memo3 n v h_spec
+      let memo' := PropMap_insert maxDollars_spec memo3 n v h_spec
       -- Insert the computed value and its proof into the memoization map.
       (⟨v, h_spec⟩, memo')  -- Return the computed value with proof and the updated memo.
 
